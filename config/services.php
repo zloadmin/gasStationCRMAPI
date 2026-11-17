@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'usrbb' => [
+        'base_url' => env('USRBB_BASE_URL', 'https://benzot.usrbb.ru'),
+        'cookie' => env('USRBB_COOKIE'),
+        'timeout' => (int) env('USRBB_TIMEOUT', 30),
+    ],
+
 ];

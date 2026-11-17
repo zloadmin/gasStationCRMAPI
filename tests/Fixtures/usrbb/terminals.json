@@ -1,0 +1,76 @@
+{
+    "count": 1,
+    "rows": [
+        {
+            "id": 292,
+            "created_at": "2026-02-26T08:00:12.000Z",
+            "updated_at": "2026-11-17T08:55:25.000Z",
+            "org_id": 57,
+            "name": "Терм-297",
+            "description": "МО, Лосино-Петровский",
+            "secret": "00000000-0000-0000-0000-000000000000",
+            "terminal_info": "{\"location\":\"/kiosk/\",\"os_timezone\":180,\"devices\":[\"Kaznachey\",\"Topaz\",\"Tank\"],\"project_ver\":\"522191m\"}",
+            "last_query_at": "2026-11-17T08:55:25.000Z",
+            "last_query": "list_settings",
+            "settings": "{\"SellerName\":\"ООО Тест\",\"TerminalMesto\":\"АЗС\",\"terminal_id\":\"297-1\",\"hide_corp_price\":0}",
+            "settings_updated_at": "2026-04-13T05:49:30.000Z",
+            "archived": false,
+            "yandex_enabled": true,
+            "yandex_test": false,
+            "yandex_token": "fake-yandex-token",
+            "yandex_name": "АЗС Клик",
+            "yandex_address": "МО, Лосино-Петровский, ул. Кирова, 1.",
+            "yandex_location": {
+                "type": "Point",
+                "coordinates": [38.20278, 55.865894]
+            },
+            "yandex_autooplata_enabled": true,
+            "place_id": null,
+            "type": "default",
+            "ping_settings": null,
+            "ping_at": null,
+            "loyal_client_enabled": false,
+            "loyal_client_api": null,
+            "loyal_client_point": null,
+            "devices": [
+                {
+                    "id": 8833,
+                    "created_at": "2026-10-28T18:56:13.000Z",
+                    "updated_at": "2026-11-17T08:55:25.000Z",
+                    "terminal_id": 292,
+                    "device_name": "Topaz",
+                    "last_report": "{\"statuses\":{\"_1\":{\"pistol\":false,\"address\":1},\"_2\":{\"pistol\":false,\"address\":2}},\"status\":{\"pistol\":false,\"address\":2}}",
+                    "last_report_at": "2026-11-17T08:55:22.000Z",
+                    "last_report_time": 1794905722,
+                    "last_error": "",
+                    "from_device": false
+                },
+                {
+                    "id": 8836,
+                    "created_at": "2026-10-28T18:56:13.000Z",
+                    "updated_at": "2026-11-17T07:55:23.000Z",
+                    "terminal_id": 292,
+                    "device_name": "CashcodeSM",
+                    "last_report": "[{\"id\":1,\"value\":10,\"count\":22,\"dispensable\":false},{\"id\":2,\"value\":50,\"count\":42,\"dispensable\":false}]",
+                    "last_report_at": "2026-11-17T07:55:17.000Z",
+                    "last_report_time": 1794902117,
+                    "last_error": "",
+                    "from_device": false
+                },
+                {
+                    "id": 8840,
+                    "created_at": "2026-10-28T18:56:25.000Z",
+                    "updated_at": "2026-11-17T08:55:25.000Z",
+                    "terminal_id": 292,
+                    "device_name": "Tank",
+                    "last_report": "{\"started\":true,\"status\":{\"359\":{\"name\":\"АИ-92\",\"price\":65.4,\"left_amount\":7762.9,\"enabled\":1},\"360\":{\"name\":\"АИ-95\",\"price\":70.7,\"left_amount\":8428.72,\"enabled\":1}}}",
+                    "last_report_at": "2026-11-17T08:55:22.000Z",
+                    "last_report_time": 1794905722,
+                    "last_error": "",
+                    "from_device": false
+                }
+            ],
+            "place": null
+        }
+    ]
+}

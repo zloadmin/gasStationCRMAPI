@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Services\Usrbb;
+
+use App\Models\Terminal;
+use App\Models\TerminalService;
+use App\Models\Transaction;
+use App\Services\Usrbb\Concerns\ParsesApiValues;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * Stores one page of a usrbb.ru transactions response ({"rows": [...], "count": n}) in the local database.
+ *
+ * Nested terminal and service objects are used to create missing terminals and keep terminal services current.
+ */
+class TransactionSynchronizer
+{
+    use ParsesApiValues;
+
+    /**
+     * @param  array{rows: list<array<string, mixed>>, count?: int, count_archived?: int}  $payload
+     * @return int Number of transactions synced.
+     */
+    public function sync(array $payload): int
+    {
+        $rows = $payload['rows'] ?? [];
+
+        if ($rows === []) {
+            return 0;
+        }
+
+        DB::transaction(function () use ($rows) {
+            foreach ($rows as $row) {
+                $this->syncTerminal($row);
+                $this->syncService($row);
+            }
+
+            Transaction::upsert(
+                array_map($this->transactionAttributes(...), $rows),
+                uniqueBy: ['id'],
+                update: [
+                    'type', 'price', 'inserted', 'dispensed', 'price_returned', 'discount', 'currency',
+                    'service_id', 'service_price', 'amount', 'amount_dispensed',
+                    'fisc', 'printed', 'sync', 'no_troubles', 'approved', 'user_id', 'updated_at',
+                ],
+            );
+        });
+
+        return count($rows);
+    }
+
+    /**
+     * Create a stub terminal if this transaction arrived before the terminal itself was synced.
+     *
+     * @param  array<string, mixed>  $row
+     */
+    private function syncTerminal(array $row): void
+    {
+        $terminal = $row['terminal'] ?? null;
+
+        Terminal::firstOrCreate(['id' => $row['terminal_id']], [
+            'org_id' => $terminal['org_id'] ?? 0,
+            'name' => $terminal['name'] ?? "Terminal {$row['terminal_id']}",
+        ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $row
+     */
+    private function syncService(array $row): void
+    {
+        $service = $row['service'] ?? null;
+
+        if ($service === null) {
+            return;
+        }
+
+        TerminalService::updateOrCreate(['id' => $service['id']], [
+            'terminal_id' => $row['terminal_id'],
+            'station_id' => $service['station_id'] ?? null,
+            'station_name' => $service['station_name'] ?? null,
+            'name' => $service['service']['name'] ?? null,
+            'price' => $service['service']['price'] ?? null,
+        ]);
+    }
+
+    /**
+     * Raw column values for a bulk upsert (model casts are not applied there).
+     *
+     * @param  array<string, mixed>  $row
+     * @return array<string, mixed>
+     */
+    private function transactionAttributes(array $row): array
+    {
+        $fisc = $this->decodeJson($row['fisc'] ?? null);
+        $now = now();
+
+        return [
+            'id' => $row['id'],
+            'tid' => $row['tid'],
+            'terminal_id' => $row['terminal_id'],
+            'service_id' => $row['service_id'] ?? null,
+            'type' => $row['type'],
+            'price' => $row['price'],
+            'inserted' => $row['inserted'] ?? 0,
+            'dispensed' => $row['dispensed'] ?? 0,
+            'price_returned' => $row['price_returned'] ?? 0,
+            'discount' => $row['discount'] ?? 0,
+            'currency' => $row['currency'] ?? 643,
+            'service_price' => $row['service_price'] ?? null,
+            'amount' => $row['amount'] ?? null,
+            'amount_dispensed' => $row['amount_dispensed'] ?? null,
+            'fisc' => $fisc === null ? null : json_encode($fisc, JSON_UNESCAPED_UNICODE),
+            'printed' => (bool) ($row['printed'] ?? false),
+            'sync' => (bool) ($row['sync'] ?? false),
+            'no_troubles' => (bool) ($row['no_troubles'] ?? true),
+            'approved' => (bool) ($row['approved'] ?? false),
+            'user_id' => $row['user_id'] ?? null,
+            'remote_created_at' => $this->parseDate($row['created_at'] ?? null)?->toDateTimeString(),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ];
+    }
+}

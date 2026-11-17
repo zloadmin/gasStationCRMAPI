@@ -1,0 +1,21 @@
+{
+    "count": 1,
+    "rows": [
+        {
+            "id": 57,
+            "created_at": "2026-02-26T07:57:59.000Z",
+            "updated_at": "2026-10-20T19:27:13.000Z",
+            "name": "ООО Кубаторика",
+            "description": "МО, Лосино-Петровский",
+            "type": "default",
+            "email": null,
+            "active": true,
+            "org_users": [
+                {
+                    "org_id": 57,
+                    "user_id": 86
+                }
+            ]
+        }
+    ]
+}

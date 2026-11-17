@@ -1,0 +1,123 @@
+{
+    "rows": [
+        {
+            "id": 7094408,
+            "tid": 5812,
+            "created_at": "2026-11-17T07:54:21.000Z",
+            "terminal_id": 292,
+            "type": "payment_cash",
+            "price": "1500.00",
+            "inserted": "1500.00",
+            "currency": 643,
+            "dispensed": "0.00",
+            "fisc": null,
+            "printed": 0,
+            "sync": 0,
+            "no_troubles": 1,
+            "approved": 0,
+            "user_id": null,
+            "service_id": 360,
+            "service_price": "67.50",
+            "amount": "22.23",
+            "amount_dispensed": "22.23",
+            "discount": "0.00",
+            "price_returned": "0.00",
+            "terminal": {
+                "id": 292,
+                "name": "Терм-297",
+                "org_id": 57
+            },
+            "service": {
+                "id": 360,
+                "station_id": "2",
+                "station_name": "2",
+                "service": {
+                    "name": "АИ-95",
+                    "price": "70.70"
+                }
+            },
+            "client": null,
+            "place_service": null
+        },
+        {
+            "id": 7094399,
+            "tid": 5811,
+            "created_at": "2026-11-17T07:52:28.000Z",
+            "terminal_id": 292,
+            "type": "payment_cash",
+            "price": "900.00",
+            "inserted": "900.00",
+            "currency": 643,
+            "dispensed": "0.00",
+            "fisc": null,
+            "printed": 0,
+            "sync": 0,
+            "no_troubles": 1,
+            "approved": 0,
+            "user_id": null,
+            "service_id": 359,
+            "service_price": "62.50",
+            "amount": "14.40",
+            "amount_dispensed": "14.40",
+            "discount": "0.00",
+            "price_returned": "0.00",
+            "terminal": {
+                "id": 292,
+                "name": "Терм-297",
+                "org_id": 57
+            },
+            "service": {
+                "id": 359,
+                "station_id": "1",
+                "station_name": "1",
+                "service": {
+                    "name": "АИ-92",
+                    "price": "65.40"
+                }
+            },
+            "client": null,
+            "place_service": null
+        },
+        {
+            "id": 7094366,
+            "tid": 5810,
+            "created_at": "2026-11-17T07:36:51.000Z",
+            "terminal_id": 292,
+            "type": "payment_card",
+            "price": "2000.00",
+            "inserted": "2000.00",
+            "currency": 643,
+            "dispensed": "0.00",
+            "fisc": null,
+            "printed": 1,
+            "sync": 0,
+            "no_troubles": 1,
+            "approved": 0,
+            "user_id": null,
+            "service_id": 359,
+            "service_price": "65.40",
+            "amount": "30.59",
+            "amount_dispensed": "30.59",
+            "discount": "0.00",
+            "price_returned": "0.00",
+            "terminal": {
+                "id": 292,
+                "name": "Терм-297",
+                "org_id": 57
+            },
+            "service": {
+                "id": 359,
+                "station_id": "1",
+                "station_name": "1",
+                "service": {
+                    "name": "АИ-92",
+                    "price": "65.40"
+                }
+            },
+            "client": null,
+            "place_service": null
+        }
+    ],
+    "count": 5792,
+    "count_archived": 0
+}
