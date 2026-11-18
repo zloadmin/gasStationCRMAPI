@@ -7,14 +7,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FuelArrival extends Model
 {
+
     protected $fillable = [
         'date',
         'service_id',
         'quantity_kg',
         'volume_liters',
-        'density',
-        'price_per_liter',
         'total_price',
+    ];
+    protected $appends = [
+        'density',
+        'price_per_liter'
     ];
 
     protected function casts(): array
@@ -29,8 +32,19 @@ class FuelArrival extends Model
         ];
     }
 
+    public function getDensityAttribute(): float
+    {
+        return round($this->quantity_kg / $this->volume_liters, 4);
+    }
+    public function getPricePerLiterAttribute(): float
+    {
+        return round($this->total_price / $this->volume_liters, 2);
+    }
+
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
+
+
 }
