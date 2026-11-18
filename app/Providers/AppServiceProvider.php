@@ -17,9 +17,12 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(UsrbbClient::class, fn () => new UsrbbClient(
+            username: config('services.usrbb.username'),
+            password: config('services.usrbb.password'),
             baseUrl: config('services.usrbb.base_url'),
             cookie: config('services.usrbb.cookie'),
             timeout: config('services.usrbb.timeout'),
+
         ));
 
         $this->app->singleton(

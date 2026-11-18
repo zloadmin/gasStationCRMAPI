@@ -15,8 +15,9 @@ return new class extends Migration
             // Primary key mirrors the usrbb.ru transaction id.
             $table->unsignedBigInteger('id')->primary();
             $table->unsignedBigInteger('tid'); // Per-terminal sequence number
-            $table->foreignId('terminal_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('service_id')->nullable()->constrained('terminal_services')->nullOnDelete();
+            $table->foreignId('terminal_id')->nullable()->constrained('terminals')->nullOnDelete();
+            $table->foreignId('terminal_service_id')->nullable()->constrained('terminal_services')->nullOnDelete();
+            $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();
             $table->string('type')->index(); // payment_cash, payment_card, ...
 
             // Money

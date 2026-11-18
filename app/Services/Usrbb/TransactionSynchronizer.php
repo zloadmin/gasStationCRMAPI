@@ -35,6 +35,7 @@ class TransactionSynchronizer
                 $this->syncService($row);
             }
 
+
             Transaction::upsert(
                 array_map($this->transactionAttributes(...), $rows),
                 uniqueBy: ['id'],
@@ -98,8 +99,8 @@ class TransactionSynchronizer
         return [
             'id' => $row['id'],
             'tid' => $row['tid'],
-            'terminal_id' => $row['terminal_id'],
-            'service_id' => $row['service_id'] ?? null,
+            'terminal_id' => $row['terminal_id'] ?? null,
+            'terminal_service_id' => $row['service_id'] ?? null,
             'type' => $row['type'],
             'price' => $row['price'],
             'inserted' => $row['inserted'] ?? 0,

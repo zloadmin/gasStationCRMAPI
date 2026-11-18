@@ -2,25 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Guarded;
+use Illuminate\Database\Eloquent\Attributes\WithoutIncrementing;
 use Illuminate\Database\Eloquent\Model;
 
+#[WithoutIncrementing]
+#[Guarded([])]
 class Service extends Model
 {
-    protected $fillable = [
-        'org_id',
-        'name',
-        'description',
-        'price',
-        'currency',
-        'good_name',
-        'good_tax',
-        'good_type',
-        'archived',
-        'data',
-        'yandex_type',
-        'remote_created_at',
-        'remote_updated_at',
-    ];
+
 
     protected function casts(): array
     {

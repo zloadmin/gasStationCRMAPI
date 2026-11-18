@@ -30,9 +30,16 @@ class Transaction extends Model
     /**
      * @return BelongsTo<TerminalService, $this>
      */
+    public function terminalService(): BelongsTo
+    {
+        return $this->belongsTo(TerminalService::class, 'terminal_service_id', 'id');
+    }
+    /**
+     * @return BelongsTo<TerminalService, $this>
+     */
     public function service(): BelongsTo
     {
-        return $this->belongsTo(TerminalService::class, 'service_id');
+        return $this->belongsTo(Service::class, 'service_id');
     }
 
     /**

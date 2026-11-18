@@ -2,7 +2,9 @@
 
 namespace App\Services\Usrbb;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
@@ -13,11 +15,113 @@ use Illuminate\Support\Facades\Http;
  */
 class UsrbbClient
 {
+    private ?string $cookie;
+    private ?string $username;
+    private ?string $passoword;
+
     public function __construct(
         private readonly string $baseUrl,
-        private readonly ?string $cookie,
+        ?string $cookie,
         private readonly int $timeout = 30,
-    ) {}
+        ?string $username,
+        ?string $password,
+    ) {
+        $this->cookie = $cookie;
+        $this->username = $username;
+        $this->passoword = $password;
+    }
+
+    /**
+     * @throws RequestException
+     * @throws ConnectionException
+     */
+    public function login(): void
+    {
+        $response = Http::baseUrl($this->baseUrl)
+            ->timeout($this->timeout)
+            ->acceptJson()
+            ->asJson()
+            ->post('/api/login', [
+                'username' => $this->username,
+                'password' => $this->passoword,
+            ]);
+
+        $response->throw();
+
+        $cookie = $this->extractCookie($response);
+
+        if (!$cookie) {
+            throw new \RuntimeException(
+                'USRBB login succeeded, but Set-Cookie header was not received.'
+            );
+        }
+
+        $this->setCookie($cookie);
+
+        $this->updateEnvCookie($cookie);
+    }
+
+    /**
+     * Extract session cookie from response.
+     */
+    private function extractCookie(Response $response): ?string
+    {
+        $cookies = $response->header('Set-Cookie');
+
+        if (!$cookies) {
+            return null;
+        }
+
+        // Extract only the cookie name and value, without attributes.
+        if (preg_match('/(?:^|,\s*)([^=;,]+=[^;]*)/', $cookies, $matches)) {
+            return trim($matches[1]);
+        }
+
+        return null;
+    }
+
+    /**
+     * Update cookie in current client instance.
+     */
+    private function setCookie(string $cookie): void
+    {
+        $this->cookie = $cookie;
+    }
+
+    /**
+     * Update USRBB_COOKIE in .env file.
+     */
+    private function updateEnvCookie(string $cookie): void
+    {
+        $path = base_path('.env');
+
+        if (!file_exists($path)) {
+            throw new \RuntimeException('.env file not found.');
+        }
+
+        $env = file_get_contents($path);
+
+        if ($env === false) {
+            throw new \RuntimeException('Unable to read .env file.');
+        }
+
+        $value = 'USRBB_COOKIE='.json_encode($cookie, JSON_UNESCAPED_SLASHES);
+
+        if (preg_match('/^USRBB_COOKIE=.*$/m', $env)) {
+            $env = preg_replace(
+                '/^USRBB_COOKIE=.*$/m',
+                $value,
+                $env
+            );
+        } else {
+            $env .= PHP_EOL.$value.PHP_EOL;
+        }
+
+        if (file_put_contents($path, $env, LOCK_EX) === false) {
+            throw new \RuntimeException('Unable to update USRBB_COOKIE in .env.');
+        }
+    }
+
 
     /**
      * @param  array<string, mixed>  $query

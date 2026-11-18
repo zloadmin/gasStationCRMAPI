@@ -25,6 +25,7 @@ class ServiceSynchronizer
 
         DB::transaction(function () use ($rows) {
             foreach ($rows as $row) {
+
                 Service::updateOrCreate(
                     ['id' => $row['id']],
                     [

@@ -39,6 +39,8 @@ return [
         'base_url' => env('USRBB_BASE_URL', 'https://benzot.usrbb.ru'),
         'cookie' => env('USRBB_COOKIE'),
         'timeout' => (int) env('USRBB_TIMEOUT', 30),
+        'username' => env('USRBB_USERNAME', 'usrbb'),
+        'password' => env('USRBB_PASSWORD', 'usrbb'),
     ],
 
 ];
