@@ -13,6 +13,8 @@ class FuelArrival extends Model
         'quantity_kg',
         'volume_liters',
         'density',
+        'price_per_liter',
+        'total_price',
     ];
 
     protected function casts(): array
@@ -22,6 +24,8 @@ class FuelArrival extends Model
             'quantity_kg' => 'decimal:3',
             'volume_liters' => 'decimal:3',
             'density' => 'decimal:4',
+            'price_per_liter' => 'decimal:2',
+            'total_price' => 'decimal:2',
         ];
     }
 
