@@ -18,7 +18,7 @@ class TransactionSynchronizer
     use ParsesApiValues;
 
     /**
-     * @param  array{rows: list<array<string, mixed>>, count?: int, count_archived?: int}  $payload
+     * @param array{rows: list<array<string, mixed>>, count?: int, count_archived?: int} $payload
      * @return int Number of transactions synced.
      */
     public function sync(array $payload): int
@@ -33,18 +33,9 @@ class TransactionSynchronizer
             foreach ($rows as $row) {
                 $this->syncTerminal($row);
                 $this->syncService($row);
+                $this->syncTransaction($row);
             }
 
-
-            Transaction::upsert(
-                array_map($this->transactionAttributes(...), $rows),
-                uniqueBy: ['id'],
-                update: [
-                    'type', 'price', 'inserted', 'dispensed', 'price_returned', 'discount', 'currency',
-                    'service_id', 'service_price', 'amount', 'amount_dispensed',
-                    'fisc', 'printed', 'sync', 'no_troubles', 'approved', 'user_id', 'updated_at',
-                ],
-            );
         });
 
         return count($rows);
@@ -53,20 +44,20 @@ class TransactionSynchronizer
     /**
      * Create a stub terminal if this transaction arrived before the terminal itself was synced.
      *
-     * @param  array<string, mixed>  $row
+     * @param array<string, mixed> $row
      */
     private function syncTerminal(array $row): void
     {
         $terminal = $row['terminal'] ?? null;
 
-        Terminal::firstOrCreate(['id' => $row['terminal_id']], [
+        Terminal::firstOrCreate([ 'id' => $row['terminal_id'] ], [
             'org_id' => $terminal['org_id'] ?? 0,
-            'name' => $terminal['name'] ?? "Terminal {$row['terminal_id']}",
+            'name'   => $terminal['name'] ?? "Terminal {$row['terminal_id']}",
         ]);
     }
 
     /**
-     * @param  array<string, mixed>  $row
+     * @param array<string, mixed> $row
      */
     private function syncService(array $row): void
     {
@@ -76,19 +67,19 @@ class TransactionSynchronizer
             return;
         }
 
-        TerminalService::updateOrCreate(['id' => $service['id']], [
-            'terminal_id' => $row['terminal_id'],
-            'station_id' => $service['station_id'] ?? null,
+        TerminalService::updateOrCreate([ 'id' => $service['id'] ], [
+            'terminal_id'  => $row['terminal_id'],
+            'station_id'   => $service['station_id'] ?? null,
             'station_name' => $service['station_name'] ?? null,
-            'name' => $service['service']['name'] ?? null,
-            'price' => $service['service']['price'] ?? null,
+            'name'         => $service['service']['name'] ?? null,
+            'price'        => $service['service']['price'] ?? null,
         ]);
     }
 
     /**
      * Raw column values for a bulk upsert (model casts are not applied there).
      *
-     * @param  array<string, mixed>  $row
+     * @param array<string, mixed> $row
      * @return array<string, mixed>
      */
     private function transactionAttributes(array $row): array
@@ -97,29 +88,70 @@ class TransactionSynchronizer
         $now = now();
 
         return [
-            'id' => $row['id'],
-            'tid' => $row['tid'],
-            'terminal_id' => $row['terminal_id'] ?? null,
+            'id'                  => $row['id'],
+            'tid'                 => $row['tid'],
+            'terminal_id'         => $row['terminal_id'] ?? null,
             'terminal_service_id' => $row['service_id'] ?? null,
-            'type' => $row['type'],
-            'price' => $row['price'],
-            'inserted' => $row['inserted'] ?? 0,
-            'dispensed' => $row['dispensed'] ?? 0,
-            'price_returned' => $row['price_returned'] ?? 0,
-            'discount' => $row['discount'] ?? 0,
-            'currency' => $row['currency'] ?? 643,
-            'service_price' => $row['service_price'] ?? null,
-            'amount' => $row['amount'] ?? null,
-            'amount_dispensed' => $row['amount_dispensed'] ?? null,
-            'fisc' => $fisc === null ? null : json_encode($fisc, JSON_UNESCAPED_UNICODE),
-            'printed' => (bool) ($row['printed'] ?? false),
-            'sync' => (bool) ($row['sync'] ?? false),
-            'no_troubles' => (bool) ($row['no_troubles'] ?? true),
-            'approved' => (bool) ($row['approved'] ?? false),
-            'user_id' => $row['user_id'] ?? null,
-            'remote_created_at' => $this->parseDate($row['created_at'] ?? null)?->toDateTimeString(),
-            'created_at' => $now,
-            'updated_at' => $now,
+            'service_id'          => $row['service']['service']['id'] ?? null,
+            'service_json'        => isset($row['service']['service']['id']) ? $row['service'] : null,
+            'data'                => $row['data'] ?? null,
+            'type'                => $row['type'],
+            'price'               => $row['price'],
+            'inserted'            => $row['inserted'] ?? 0,
+            'dispensed'           => $row['dispensed'] ?? 0,
+            'price_returned'      => $row['price_returned'] ?? 0,
+            'discount'            => $row['discount'] ?? 0,
+            'currency'            => $row['currency'] ?? 643,
+            'service_price'       => $row['service_price'] ?? null,
+            'amount'              => $row['amount'] ?? null,
+            'amount_dispensed'    => $row['amount_dispensed'] ?? null,
+            'fisc'                => $fisc === null ? null : json_encode($fisc, JSON_UNESCAPED_UNICODE),
+            'printed'             => (bool)($row['printed'] ?? false),
+            'sync'                => (bool)($row['sync'] ?? false),
+            'no_troubles'         => (bool)($row['no_troubles'] ?? true),
+            'approved'            => (bool)($row['approved'] ?? false),
+            'user_id'             => $row['user_id'] ?? null,
+            'remote_created_at'   => $this->parseDate($row['created_at'] ?? null)?->toDateTimeString(),
+            'created_at'          => $now,
+            'updated_at'          => $now,
         ];
+    }
+
+    private function syncTransaction(mixed $row)
+    {
+        Transaction::updateOrCreate(
+            [ 'id' => $row['id'] ],
+            [
+                'id'                  => $row['id'],
+                'tid'                 => $row['tid'],
+                'terminal_id'         => $row['terminal_id'] ?? null,
+                'terminal_service_id' => $row['service_id'] ?? null,
+                'service_id'          => $row['service']['service']['id'] ?? null,
+                'service_json'        => isset($row['service']['service']['id']) ? $row['service'] : null,
+                'data'                => $row['data'] ?? null,
+                'type'                => $row['type'],
+                'price'               => $row['price'],
+                'inserted'            => $row['inserted'] ?? 0,
+                'dispensed'           => $row['dispensed'] ?? 0,
+                'price_returned'      => $row['price_returned'] ?? 0,
+                'discount'            => $row['discount'] ?? 0,
+                'currency'            => $row['currency'] ?? 0,
+                'service_price'       => $row['service']['service']['price'] ?? null,
+                'amount'              => $row['amount'] ?? null,
+                'amount_dispensed'    => $row['amount_dispensed'] ?? null,
+                'printed'             => (bool)($row['printed'] ?? false),
+                'sync'                => (bool)($row['sync'] ?? false),
+                'no_troubles'         => (bool)($row['no_troubles'] ?? true),
+                'approved'            => (bool)($row['approved'] ?? false),
+                'user_id'             => $row['user_id'] ?? null,
+                'remote_created_at'   => $this->parseDate($row['created_at'] ?? null)?->toDateTimeString(),
+            ]
+        );
+
+        if (isset($row['service']['service']['id'])) {
+            Transaction::findOrFail($row['id'])->update([
+                'parsed_full' => true
+            ]);
+        }
     }
 }

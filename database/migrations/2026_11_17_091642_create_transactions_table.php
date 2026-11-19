@@ -20,6 +20,10 @@ return new class extends Migration
             $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();
             $table->string('type')->index(); // payment_cash, payment_card, ...
 
+            $table->unsignedBigInteger('station_id')->nullable()->index();
+            $table->string('station_name')->nullable()->index();
+
+
             // Money
             $table->decimal('price', 12, 2); // Order total
             $table->decimal('inserted', 12, 2)->default(0); // Paid by the customer
@@ -33,7 +37,7 @@ return new class extends Migration
             $table->decimal('amount', 12, 2)->nullable(); // Litres ordered
             $table->decimal('amount_dispensed', 12, 2)->nullable(); // Litres actually pumped
 
-            $table->json('fisc')->nullable();
+
             $table->boolean('printed')->default(false);
             $table->boolean('sync')->default(false);
             $table->boolean('no_troubles')->default(true);
@@ -43,7 +47,13 @@ return new class extends Migration
             $table->timestamp('remote_created_at')->nullable()->index();
             $table->timestamps();
 
-            $table->unique(['terminal_id', 'tid']);
+            $table->json('fisc')->nullable();
+            $table->json('service_json')->nullable();
+            $table->json('data')->nullable();
+
+            $table->boolean('parsed_full')->default(false)->index();
+
+
         });
     }
 

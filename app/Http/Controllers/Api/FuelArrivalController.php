@@ -20,6 +20,16 @@ class FuelArrivalController extends Controller
         $filters = $request->validated();
 
         $query = FuelArrival::query()->with('service');
+        $query->select([
+            'id',
+            'date',
+            'service_id',
+            'quantity_kg',
+            'volume_liters',
+            'total_price',
+            'created_at',
+            'updated_at',
+        ]);
 
         $query->when(
             $filters['date_from'] ?? null,

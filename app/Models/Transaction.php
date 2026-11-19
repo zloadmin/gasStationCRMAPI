@@ -19,6 +19,11 @@ class Transaction extends Model
     /** @use HasFactory<TransactionFactory> */
     use HasFactory;
 
+    protected $hidden = [
+        'service_json',
+        'data',
+    ];
+
     /**
      * @return BelongsTo<Terminal, $this>
      */
@@ -69,6 +74,8 @@ class Transaction extends Model
             'approved' => 'boolean',
             'user_id' => 'integer',
             'remote_created_at' => 'datetime',
+            'service_json' => 'json',
+            'data' => 'json',
         ];
     }
 }

@@ -21,11 +21,12 @@ class UsrbbClient
 
     public function __construct(
         private readonly string $baseUrl,
-        ?string $cookie,
-        private readonly int $timeout = 30,
-        ?string $username,
-        ?string $password,
-    ) {
+        ?string                 $cookie,
+        private readonly int    $timeout = 30,
+        ?string                 $username,
+        ?string                 $password,
+    )
+    {
         $this->cookie = $cookie;
         $this->username = $username;
         $this->passoword = $password;
@@ -35,7 +36,7 @@ class UsrbbClient
      * @throws RequestException
      * @throws ConnectionException
      */
-    public function login(): void
+    private function login(): void
     {
         $response = Http::baseUrl($this->baseUrl)
             ->timeout($this->timeout)
@@ -61,6 +62,17 @@ class UsrbbClient
         $this->updateEnvCookie($cookie);
     }
 
+    /**
+     * @throws RequestException
+     * @throws ConnectionException
+     */
+    public function loginIsNeeded(): void
+    {
+
+        if(!$this->check()) {
+            $this->login();
+        }
+    }
     /**
      * Extract session cookie from response.
      */
@@ -105,7 +117,7 @@ class UsrbbClient
             throw new \RuntimeException('Unable to read .env file.');
         }
 
-        $value = 'USRBB_COOKIE='.json_encode($cookie, JSON_UNESCAPED_SLASHES);
+        $value = 'USRBB_COOKIE=' . json_encode($cookie, JSON_UNESCAPED_SLASHES);
 
         if (preg_match('/^USRBB_COOKIE=.*$/m', $env)) {
             $env = preg_replace(
@@ -114,7 +126,7 @@ class UsrbbClient
                 $env
             );
         } else {
-            $env .= PHP_EOL.$value.PHP_EOL;
+            $env .= PHP_EOL . $value . PHP_EOL;
         }
 
         if (file_put_contents($path, $env, LOCK_EX) === false) {
@@ -124,20 +136,20 @@ class UsrbbClient
 
 
     /**
-     * @param  array<string, mixed>  $query
+     * @param array<string, mixed> $query
      */
     private function get(string $uri, array $query = []): Response
     {
         return $this->request()->get($uri, $query)->throw();
     }
-//
-//    /**
-//     * @param  array<string, mixed>  $data
-//     */
-//    public function post(string $uri, array $data = []): Response
-//    {
-//        return $this->request()->post($uri, $data)->throw();
-//    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function post(string $uri, array $data = []): Response
+    {
+        return $this->request()->post($uri, $data)->throw();
+    }
 //
 //    /**
 //     * @param  array<string, mixed>  $data
@@ -165,28 +177,52 @@ class UsrbbClient
             ->acceptJson();
 
         if (filled($this->cookie)) {
-            $request->withHeaders(['Cookie' => $this->cookie]);
+            $request->withHeaders([ 'Cookie' => $this->cookie ]);
         }
 
         return $request;
     }
-    public function getServices(int $page = 0, int $size = 100, $org_id = 57) : array
+
+    public function getServices(int $page = 0, int $size = 100, $org_id = 57): array
     {
         return $this->get($this->getListPathByName('services'),
             compact('page', 'size', 'org_id'))->json();
     }
-    public function getTerminals(int $page = 0, int $size = 100) : array
+
+    public function getTerminals(int $page = 0, int $size = 100): array
     {
         return $this->get($this->getListPathByName('terminals'),
             compact('page', 'size'))->json();
     }
-    public function getTransactions(int $page = 0, int $size = 100) : array
+
+    public function getTransactions(int $page = 0, int $size = 100): array
     {
         return $this->get($this->getListPathByName('operations'),
             compact('page', 'size'))->json();
     }
+
+    public function getTransaction(int $id): array
+    {
+        return $this->get($this->getPath('operations/list/' . $id))->json();
+    }
+
+    private function check(): bool
+    {
+        try {
+            $result = $this->post($this->getPath('check'))->json();
+        } catch (\Exception $e) {
+            return false;
+        }
+        return boolval($result['ok'] ?? false);
+    }
+
     private function getListPathByName(string $name): string
     {
         return sprintf('%s/api/%s/list', $this->baseUrl, $name);
+    }
+
+    private function getPath(string $name): string
+    {
+        return sprintf('%s/api/%s', $this->baseUrl, $name);
     }
 }

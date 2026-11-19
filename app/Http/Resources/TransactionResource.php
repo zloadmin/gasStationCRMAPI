@@ -10,43 +10,51 @@ class TransactionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id'  => $this->id,
             'tid' => $this->tid,
 
             'terminal' => $this->whenLoaded('terminal', function () {
                 return [
-                    'id' => $this->terminal?->id,
+                    'id'   => $this->terminal?->id,
                     'name' => $this->terminal?->name,
                 ];
             }),
 
             'terminalService' => $this->whenLoaded('terminalService', function () {
                 return [
-                    'id' => $this->terminalService?->id,
-                    'name' => $this->terminalService?->name,
+                    'id'        => $this->terminalService?->id,
+                    'name'      => $this->terminalService?->name,
                     'good_name' => $this->terminalService?->good_name,
                 ];
             }),
+            'service' => $this->whenLoaded('service', function () {
+                return [
+                    'id'   => $this->service?->id,
+                    'name' => $this->service?->name,
+                ];
+            }),
+
+            'station_id'      => $this->station_id,
+            'station_name'    => $this->station_name,
 
             'type' => $this->type,
 
-            'price' => $this->price,
-            'inserted' => $this->inserted,
-            'dispensed' => $this->dispensed,
+            'price'          => $this->price,
+            'inserted'       => $this->inserted,
+            'dispensed'      => $this->dispensed,
             'price_returned' => $this->price_returned,
-            'discount' => $this->discount,
-            'currency' => $this->currency,
+            'discount'       => $this->discount,
+            'currency'       => $this->currency,
 
-            'service_price' => $this->service_price,
-            'amount' => $this->amount,
+            'service_price'    => $this->service_price,
+            'amount'           => $this->amount,
             'amount_dispensed' => $this->amount_dispensed,
 
-            'fisc' => $this->fisc,
 
-            'printed' => $this->printed,
-            'sync' => $this->sync,
+            'printed'     => $this->printed,
+            'sync'        => $this->sync,
             'no_troubles' => $this->no_troubles,
-            'approved' => $this->approved,
+            'approved'    => $this->approved,
 
             'user_id' => $this->user_id,
 

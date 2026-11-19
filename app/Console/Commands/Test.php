@@ -17,6 +17,6 @@ class Test extends Command
     public function handle(UsrbbClient $client): void
     {
 
-        $client->login();
+        dd($client->check());
     }
 }

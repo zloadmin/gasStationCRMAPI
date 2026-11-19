@@ -14,13 +14,13 @@ class IndexTransactionRequest extends FormRequest
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
 
-            'service_id' => ['nullable', 'integer', 'exists:services,id'],
+            'service_id' => ['nullable', 'integer'],
 
-            'terminal_id' => ['nullable', 'integer', 'exists:terminals,id'],
+
 
             'column_id' => ['nullable', 'integer'],
 
-            'type' => ['nullable', 'string', 'max:100'],
+            'type' => ['nullable', 'string'],
 
             'status' => ['nullable', 'string', 'max:100'],
 
