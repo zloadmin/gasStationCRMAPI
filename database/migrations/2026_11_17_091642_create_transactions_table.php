@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('terminal_id')->nullable()->constrained('terminals')->nullOnDelete();
             $table->foreignId('terminal_service_id')->nullable()->constrained('terminal_services')->nullOnDelete();
             $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();
+
             $table->string('type')->index(); // payment_cash, payment_card, ...
 
             $table->unsignedBigInteger('station_id')->nullable()->index();

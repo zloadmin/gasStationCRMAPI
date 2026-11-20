@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\FuelArrival;
+use App\Models\Transaction;
+use App\Observers\FuelArrivalObserver;
+use App\Observers\TransactionObserver;
 use App\Services\Usrbb\ServiceSynchronizer;
 use App\Services\Usrbb\TerminalServiceSynchronizer;
 use App\Services\Usrbb\TerminalSynchronizer;
@@ -44,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Transaction::observe(TransactionObserver::class);
+        FuelArrival::observe(FuelArrivalObserver::class);
     }
 }

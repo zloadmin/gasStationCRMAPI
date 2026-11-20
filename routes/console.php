@@ -1,8 +1,13 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+use App\Console\Commands\Usrbb\UsrbbSynchronizer;
+use Illuminate\Support\Facades\Schedule;
+
+
+
+Schedule::command(UsrbbSynchronizer::class)->everyMinute();
+//Schedule::command(UsrbbSynchronizer::class, ['--full'])->daily();
+
+
+

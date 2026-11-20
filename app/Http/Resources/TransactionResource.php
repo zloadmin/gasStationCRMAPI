@@ -33,6 +33,13 @@ class TransactionResource extends JsonResource
                     'name' => $this->service?->name,
                 ];
             }),
+            'fuelArrival' => $this->whenLoaded('fuelArrival', function () {
+                return [
+                    'id'   => $this->fuelArrival?->id,
+                    'date' => $this->fuelArrival?->date,
+                    'price_per_liter' => $this->fuelArrival?->price_per_liter,
+                ];
+            }),
 
             'station_id'      => $this->station_id,
             'station_name'    => $this->station_name,

@@ -21,14 +21,18 @@ class UsrbbSynchronizer extends Command
     public function handle(UsrbbClient $client)
     {
 
-
+        $isFull = $this->option('full') || now()->startOfDay()->diffInMinutes(now()) == 0;;
         $client->loginIsNeeded();
 
-        $this->call('usrbb:synchronizer-services');
-        $this->call('usrbb:synchronizer-terminals');
+        if ($isFull) {
+            $this->call('usrbb:synchronizer-services');
+            $this->call('usrbb:synchronizer-terminals');
+        }
         $this->call('usrbb:synchronizer-transactions', [
-            '--full' => $this->option('full'),
+            '--full' => $isFull,
         ]);
-        $this->call('usrbb:synchronizer-full-transactions');
+        $this->call('usrbb:synchronizer-full-transactions', [
+            '--full' => $isFull,
+        ]);
     }
 }

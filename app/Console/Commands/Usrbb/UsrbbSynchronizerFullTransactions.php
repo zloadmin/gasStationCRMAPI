@@ -10,7 +10,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('usrbb:synchronizer-full-transactions')]
+#[Signature('usrbb:synchronizer-full-transactions {--full}')]
 #[Description('Sync usrbb transaction full items')]
 class UsrbbSynchronizerFullTransactions extends Command
 {
@@ -19,7 +19,12 @@ class UsrbbSynchronizerFullTransactions extends Command
      */
     public function handle(UsrbbClient $client, TransactionSynchronizer $synchronizer): void
     {
-        $notProcessedIds = Transaction::where('parsed_full', false)->orderByDesc('id')->pluck('id')->toArray();
+        $notProcessedIds = Transaction::where('parsed_full', false)->orderByDesc('id');
+        if(!$this->option('full')) {
+            $notProcessedIds->where('created_at', '>', now()->subHour());
+        }
+        $notProcessedIds = $notProcessedIds->pluck('id')->toArray();
+
 
         $fullCount = 0;
         foreach ($notProcessedIds as $id) {

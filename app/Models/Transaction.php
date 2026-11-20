@@ -47,6 +47,11 @@ class Transaction extends Model
         return $this->belongsTo(Service::class, 'service_id');
     }
 
+    public function fuelArrival(): BelongsTo
+    {
+        return $this->belongsTo(FuelArrival::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

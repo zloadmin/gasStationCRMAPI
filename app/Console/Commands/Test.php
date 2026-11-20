@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\SynchronizeFuelArrivals;
 use App\Services\Usrbb\UsrbbClient;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
@@ -17,6 +18,6 @@ class Test extends Command
     public function handle(UsrbbClient $client): void
     {
 
-        dd($client->check());
+        SynchronizeFuelArrivals::dispatchSync();
     }
 }

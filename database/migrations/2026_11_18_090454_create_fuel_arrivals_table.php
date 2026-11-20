@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->dateTime('date');
-            $table->foreignId('service_id')->constrained('services');
+            $table->foreignId('service_id')->index()->constrained('services');
             $table->decimal('quantity_kg', 12, 3)->nullable()->comment('Масса, кг');
             $table->decimal('volume_liters', 12, 3)->nullable()->comment('Объем, л');
             $table->decimal('total_price', 14, 2)->nullable()->comment('Общая стоимость');
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index('date');
+            $table->index(['service_id', 'date', 'id']);
         });
     }
 

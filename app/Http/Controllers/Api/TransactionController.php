@@ -20,6 +20,7 @@ class TransactionController extends Controller
                 'terminal',
                 'terminalService',
                 'service',
+                'fuelArrival'
             ]);
 
         // Period
