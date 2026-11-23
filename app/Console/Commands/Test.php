@@ -18,6 +18,6 @@ class Test extends Command
     public function handle(UsrbbClient $client): void
     {
 
-        SynchronizeFuelArrivals::dispatchSync();
+        SynchronizeFuelArrivals::dispatchSync(7112873);
     }
 }

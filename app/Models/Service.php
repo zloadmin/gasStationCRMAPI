@@ -22,4 +22,8 @@ class Service extends Model
             'remote_updated_at' => 'datetime',
         ];
     }
+    static function getIdNameDict(): array
+    {
+        return self::pluck('name', 'id')->toArray();
+    }
 }

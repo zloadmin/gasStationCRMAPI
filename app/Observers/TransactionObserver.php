@@ -9,16 +9,16 @@ class TransactionObserver
 {
     public function created(Transaction $transaction): void
     {
-        SynchronizeFuelArrivals::dispatch();
+        SynchronizeFuelArrivals::dispatch($transaction->id);
     }
 
     public function updated(Transaction $transaction): void
     {
-        SynchronizeFuelArrivals::dispatch();
+        SynchronizeFuelArrivals::dispatch($transaction->id);
     }
 
     public function deleted(Transaction $transaction): void
     {
-        SynchronizeFuelArrivals::dispatch();
+        SynchronizeFuelArrivals::dispatch($transaction->id);
     }
 }

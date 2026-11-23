@@ -55,6 +55,22 @@ return new class extends Migration
             $table->boolean('parsed_full')->default(false)->index();
 
 
+
+
+            // fuel_arrival table data
+            $table->decimal('fuel_arrival_price_per_liter_cashless', 14)->nullable();
+            $table->decimal('fuel_arrival_price_per_liter_cash', 14)->nullable();
+            $table->decimal('fuel_arrival_price_per_liter', 14)->nullable();
+
+            // profit calc
+            $table->string('profit_service_name')->nullable();
+            $table->decimal('profit_revenue', 14)->nullable();
+            $table->decimal('profit_cost', 14)->nullable();
+            $table->decimal('profit_profit', 14)->nullable();
+
+
+
+
         });
     }
 

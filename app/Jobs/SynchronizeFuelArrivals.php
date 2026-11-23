@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\FuelArrival;
 use Illuminate\Bus\Queueable;
@@ -30,29 +31,48 @@ class SynchronizeFuelArrivals implements ShouldQueue, ShouldBeUnique, ShouldQueu
         return 'fuel-arrivals-synchronization';
     }
 
+    public function __construct(public ?int $transaction_id = null)
+    {
+
+    }
+
     public function handle(): void
     {
-        Transaction::query()
-            ->select(['id', 'service_id', 'remote_created_at', 'fuel_arrival_id'])
-            ->chunkById(1000, function ($transactions) {
-                foreach ($transactions as $transaction) {
 
-                    $arrivalId = FuelArrival::query()
-                        ->where('service_id', $transaction->service_id)
-                        ->where('date', '<=', $transaction->remote_created_at)
-                        ->orderByDesc('date')
-                        ->orderByDesc('id')
-                        ->value('id');
+        $serviceDic = Service::getIdNameDict();
 
+        $this->getQuery()->chunkById(1000, function ($transactions) use (&$serviceDic) {
+            foreach ($transactions as $transaction) {
 
-                    if ($transaction->fuel_arrival_id != $arrivalId) {
-                        Transaction::query()
-                            ->whereKey($transaction->id)
-                            ->update([
-                                'fuel_arrival_id' => $arrivalId,
-                            ]);
-                    }
-                }
-            });
+                $arrival = FuelArrival::query()
+                    ->where('service_id', $transaction->service_id)
+                    ->where('date', '<=', $transaction->remote_created_at)
+                    ->orderByDesc('date')
+                    ->orderByDesc('id')
+                    ->first();
+
+                $transaction->updateFuelArrivalAndCostsFields($arrival, $serviceDic);
+
+            }
+        });
+    }
+
+    public function getQuery()
+    {
+        $query = Transaction::query()
+            ->select([
+                'id',
+                'service_id',
+                'remote_created_at',
+                'fuel_arrival_id',
+                'amount_dispensed',
+                'service_price',
+                'printed'
+            ]);
+
+        if ($this->transaction_id) {
+            $query->where('id', $this->transaction_id);
+        }
+        return $query->orderByDesc('transactions.id');
     }
 }

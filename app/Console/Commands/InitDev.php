@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\FuelArrival;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Console\Attributes\Description;
@@ -20,6 +21,7 @@ class InitDev extends Command
         $this->call('migrate:refresh');
         $this->createDevUser();
         $this->createDevServices();
+        $this->createDevFuelArrival();
 
     }
 
@@ -69,5 +71,27 @@ class InitDev extends Command
         foreach ($services as $service) {
             Service::create($service);
         }
+    }
+    private function createDevFuelArrival(): void
+    {
+        FuelArrival::create([
+            'date' => '2026-01-31 21:00:00',
+            'service_id' => 182,
+            'quantity_kg' => 10000.000,
+            'volume_liters' => 10000.000,
+            'total_price' => 500000.00,
+            'price_per_liter_cashless' => 50.00,
+            'price_per_liter_cash' => 45.00,
+        ]);
+
+        FuelArrival::create([
+            'date' => '2026-02-01 00:00:00',
+            'service_id' => 183,
+            'quantity_kg' => 100000.000,
+            'volume_liters' => 100000.000,
+            'total_price' => 6000000.00,
+            'price_per_liter_cashless' => 60.00,
+            'price_per_liter_cash' => 58.00,
+        ]);
     }
 }

@@ -41,6 +41,9 @@ class TransactionResource extends JsonResource
                 ];
             }),
 
+
+            'fuel_arrival_price_per_liter'      => $this->fuel_arrival_price_per_liter,
+
             'station_id'      => $this->station_id,
             'station_name'    => $this->station_name,
 
