@@ -15,23 +15,20 @@ class FuelArrivalResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'date' => $this->date,
-
-            'service_id' => $this->service_id,
-            'service' => new ServiceResource(
+            'id'                       => $this->id,
+            'date'                     => $this->date,
+            'service_id'               => $this->service_id,
+            'service'                  => new ServiceResource(
                 $this->whenLoaded('service')
             ),
-
-            'quantity_kg' => $this->quantity_kg,
-            'volume_liters' => $this->volume_liters,
-            'density' => $this->density,
-
-            'price_per_liter' => $this->price_per_liter,
-            'total_price' => $this->total_price,
-
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'quantity_kg'              => $this->quantity_kg,
+            'volume_liters'            => $this->volume_liters,
+            'density'                  => $this->density,
+            'price_per_liter_cashless' => $this->price_per_liter_cashless,
+            'price_per_liter_cash'     => $this->price_per_liter_cash,
+            'total_price'              => $this->total_price,
+            'created_at'               => $this->created_at,
+            'updated_at'               => $this->updated_at,
         ];
     }
 }

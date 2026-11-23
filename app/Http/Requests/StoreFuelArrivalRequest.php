@@ -18,7 +18,9 @@ class StoreFuelArrivalRequest extends FormRequest
             'quantity_kg' => ['required', 'numeric', 'gt:0'],
             'volume_liters' => ['required', 'numeric', 'gt:0'],
 
-            'total_price' => ['nullable', 'numeric', 'gte:0'],
+            'total_price' => ['required', 'numeric', 'gte:0'],
+            'price_per_liter_cashless' => ['required', 'numeric', 'gte:0'],
+            'price_per_liter_cash' => ['required', 'numeric', 'gte:0'],
         ];
     }
 

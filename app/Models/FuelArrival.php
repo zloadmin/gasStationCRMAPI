@@ -15,10 +15,12 @@ class FuelArrival extends Model
         'quantity_kg',
         'volume_liters',
         'total_price',
+        'price_per_liter_cashless',
+        'price_per_liter_cash',
     ];
     protected $appends = [
         'density',
-        'price_per_liter'
+//        'price_per_liter'
     ];
 
     protected function casts(): array
@@ -28,7 +30,8 @@ class FuelArrival extends Model
             'quantity_kg' => 'decimal:3',
             'volume_liters' => 'decimal:3',
             'density' => 'decimal:4',
-            'price_per_liter' => 'decimal:2',
+            'price_per_liter_cashless' => 'decimal:2',
+            'price_per_liter_cash' => 'decimal:2',
             'total_price' => 'decimal:2',
         ];
     }
@@ -37,10 +40,10 @@ class FuelArrival extends Model
     {
         return round($this->quantity_kg / $this->volume_liters, 4);
     }
-    public function getPricePerLiterAttribute(): float
-    {
-        return round($this->total_price / $this->volume_liters, 2);
-    }
+//    public function getPricePerLiterAttribute(): float
+//    {
+//        return round($this->total_price / $this->volume_liters, 2);
+//    }
 
     public function service(): BelongsTo
     {

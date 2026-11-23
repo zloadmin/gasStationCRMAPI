@@ -16,9 +16,11 @@ return new class extends Migration
 
             $table->dateTime('date');
             $table->foreignId('service_id')->index()->constrained('services');
-            $table->decimal('quantity_kg', 12, 3)->nullable()->comment('Масса, кг');
-            $table->decimal('volume_liters', 12, 3)->nullable()->comment('Объем, л');
-            $table->decimal('total_price', 14, 2)->nullable()->comment('Общая стоимость');
+            $table->decimal('quantity_kg', 12, 3)->comment('Масса, кг');
+            $table->decimal('volume_liters', 12, 3)->comment('Объем, л');
+            $table->decimal('total_price', 14)->comment('Общая стоимость');
+            $table->decimal('price_per_liter_cashless', 14)->comment('Цена за литр (безнал)');
+            $table->decimal('price_per_liter_cash', 14)->comment('Цена за литр (наличные)');
 
             $table->timestamps();
 

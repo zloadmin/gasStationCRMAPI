@@ -27,6 +27,8 @@ class FuelArrivalController extends Controller
             'quantity_kg',
             'volume_liters',
             'total_price',
+            'price_per_liter_cashless',
+            'price_per_liter_cash',
             'created_at',
             'updated_at',
         ]);
